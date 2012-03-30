@@ -128,5 +128,23 @@ describe "will paginate mongoid" do
         criteria.offset.should be_nil # this is already a criteria method
       end
     end
+    
+    describe "Model#per_page" do
+      it "should be called by paginate" do
+        MongoidModel.expects(:per_page).once.returns(10)
+        
+        criteria.paginate.per_page.should == 10
+      end
+      
+      describe "WillPaginate::PerPage extension" do
+        it "should be extendable" do
+          klass = Class.new(MongoidModel) do
+            extend WillPaginate::PerPage
+          end
+        
+          klass.criteria.paginate.per_page.should == 30
+        end
+      end
+    end
   end
 end
